@@ -13,7 +13,7 @@ export default defineConfig({
       '/api': {
         target: 'https://hackathon-test1.onrender.com',  // http://localhost:5000 URL of your Express backend
         changeOrigin: true,             // Change the origin of the host header to match the target
-        // secure: false,                  // Use only if the backend uses HTTPS
+        secure: false,                  // Use only if the backend uses HTTPS
       },
     },
   },
