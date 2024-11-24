@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Card, message, Modal } from "antd";
-import axios from "axios";
+import { axiosInstance } from "../lib/axios";
+
 
 const ProductCard: React.FC = () => {
   const [productname, setProductName] = useState("")
@@ -73,7 +74,7 @@ const ProductCard: React.FC = () => {
     let data = {name: productname}
     setConfirmLoading(true); // Start loading
     try {
-      const response = await axios.post(`/api/add-product`, data)
+      const response = await axiosInstance.post(`/api/add-product`, data)
       message.success(`The Product ${response.data.name} created successfully`)
     } catch (error) {
       console.log(error)
@@ -85,7 +86,7 @@ const ProductCard: React.FC = () => {
 
   const fetchProductDefinition = useCallback(async () => {
     try {
-      const response = await axios.get(`/api/getproductdefinition`);
+      const response = await axiosInstance.get(`/api/getproductdefinition`);
       setProductdefinition(response.data);
       console.log(response.data);
     } catch (error) {
@@ -96,7 +97,7 @@ const ProductCard: React.FC = () => {
   const newProductDefinition = async () => {
     setConfirmLoading(true); // Start loading
     try {
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         `/api/new-productdefinition`,
         defaultformData
       );
@@ -119,7 +120,7 @@ const ProductCard: React.FC = () => {
     let updatedformData = {updates: defaultformData}
     setConfirmLoading(true); // Start loading
     try {
-      const response = await axios.patch(
+      const response = await axiosInstance.patch(
         `/api/update-productdefinition`,
         updatedformData
       );
@@ -139,7 +140,7 @@ const ProductCard: React.FC = () => {
 
   const resetProductDefinition = async () => {
     try {
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         `/api/new-productdefinition`,
         defaultformData
       );
@@ -155,7 +156,7 @@ const ProductCard: React.FC = () => {
 
   const deleteProductDefinition = async () => {
     try {
-      const response = await axios.delete(`/api/delete-productdefinition`);
+      const response = await axiosInstance.delete(`/api/delete-productdefinition`);
       message.success(response.data.message, 5);
       console.log(response.data);
 

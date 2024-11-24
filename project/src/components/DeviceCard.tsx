@@ -1,7 +1,7 @@
 // import React from "react";
 import { message } from "antd";
-import axios from "axios";
 import { Power } from "lucide-react";
+import { axiosInstance } from "../lib/axios";
 
 interface DeviceCardProps {
   isOn: boolean;
@@ -21,7 +21,7 @@ const stopDeviceID = {
 // to Device Start
 const makeDeviseStart = async () => {
   try {
-    const response = await axios.post(
+    const response = await axiosInstance.post(
       `/api/start-device`, actionDeviceID
     );
     message.success(`${response.data.message},action: ${response.data.updatedDevices[0].action}`)
@@ -33,7 +33,7 @@ const makeDeviseStart = async () => {
 // to Device Stop
 const makeDeviseStop = async () => {
   try {
-    const response = await axios.post(
+    const response = await axiosInstance.post(
       `/api/stop-device`, stopDeviceID
     );
     message.success(`${response.data.message},action: ${response.data.updatedDevices[0].action}`)

@@ -3,7 +3,8 @@ import { Settings, Bell, X, Droplet, Sun, Gauge, Power } from 'lucide-react';
 import StatusCard from './components/StatusCard';
 import DeviceCard from './components/DeviceCard';
 import ProductCard from './components/ProductCard';
-import axios from 'axios';
+import { axiosInstance } from './lib/axios';
+
 
 function App() {
   const [moistureLevel, setMoistureLevel] = useState(75);
@@ -14,7 +15,7 @@ function App() {
   const checkDeviceRunningStatus = async() => {
     let data = {productID: "61630893-6873-456c-bc38-b9d7eb7bcedb"}
     try {
-      const response = await axios.post(`/api/check-running`, data)
+      const response = await axiosInstance.post(`/api/check-running`, data)
       console.log(response.data)
       if(parseInt(response.data.runningDevicesCount) > 0){
         setIsDeviceOn(true)
