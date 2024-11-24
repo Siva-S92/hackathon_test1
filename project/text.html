@@ -1,0 +1,20 @@
+<p>ID: {productdefinition?.productID}</p>
+        <p>Product Name: {productdefinition?.name}</p>
+        <p>
+          Sensor1: {productdefinition?.components?.soil_moisture_sensor?.name}
+        </p>
+        <p>Type: {productdefinition?.components?.soil_moisture_sensor?.type}</p>
+        <p>Unit: {productdefinition?.components?.soil_moisture_sensor?.unit}</p>
+        <p>
+          Range:{" "}
+          {productdefinition?.components?.soil_moisture_sensor?.range.min} -
+          {productdefinition?.components?.soil_moisture_sensor?.range.max}
+        </p>
+        <p>Sensor2: {productdefinition?.components?.LDR_sensor?.name}</p>
+        <p>Type: {productdefinition?.components?.LDR_sensor?.type}</p>
+        <p>Unit: {productdefinition?.components?.LDR_sensor?.unit}</p>
+        <p>
+          Range:{productdefinition?.components?.LDR_sensor?.range.min} -
+          {productdefinition?.components?.LDR_sensor?.range.max}
+        </p>
+        <p>Actuator1: {productdefinition?.components?.actuator?.type}</p>
