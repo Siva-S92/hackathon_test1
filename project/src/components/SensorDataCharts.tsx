@@ -60,7 +60,7 @@ export default function BasicLineChart() {
   return (
     <>
     <div className="flex gap-20 flex-col md:flex-row md:gap-0">
-      <LineChart className="w-[50%]"
+      <LineChart className="w-full md:w-[50%]"
         xAxis={[{ data: indexes }]}
         series={[
           {
@@ -71,7 +71,7 @@ export default function BasicLineChart() {
         
         height={300}
       />
-      <LineChart className="w-[50%]"
+      <LineChart className="w-full md:w-[50%]"
         xAxis={[{ data: indexes }]}
         series={[
           {
