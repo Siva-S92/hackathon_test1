@@ -59,8 +59,8 @@ export default function BasicLineChart() {
 
   return (
     <>
-    <div className="flex flex-col md:flex-row">
-      <LineChart
+    <div className="flex gap-20 flex-col md:flex-row md:gap-0">
+      <LineChart className="w-[50%]"
         xAxis={[{ data: indexes }]}
         series={[
           {
@@ -68,10 +68,10 @@ export default function BasicLineChart() {
             label: "Soil Moisture",
           },
         ]}
-        width={500}
+        
         height={300}
       />
-      <LineChart
+      <LineChart className="w-[50%]"
         xAxis={[{ data: indexes }]}
         series={[
           {
@@ -79,7 +79,7 @@ export default function BasicLineChart() {
             label: "LDR_sensor",
           },
         ]}
-        width={500}
+        
         height={300}
       />
     </div>
