@@ -156,3 +156,42 @@ export const stopDevice = async(req, res) => {
         });
     }
 }
+
+export const generataData = async(req, res) => {
+    try {
+        // Forward the request body and headers to the external API
+        const response = await axios.post('https://eureka.innotrat.in/generate_data', req.body, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        // Send the response back to the client
+        res.status(200).json(response.data);
+    } catch (error) {
+        console.error('Error calling external API:', error.message);
+        res.status(error.response?.status || 500).json({
+            error: error.message || 'An error occurred',
+        });
+    }
+}
+
+
+export const getAllData = async(req, res) => {
+    try {
+        // Forward the request body and headers to the external API
+        const response = await axios.post('https://eureka.innotrat.in/get_data', req.body, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        // Send the response back to the client
+        res.status(200).json(response.data);
+    } catch (error) {
+        console.error('Error calling external API:', error.message);
+        res.status(error.response?.status || 500).json({
+            error: error.message || 'An error occurred',
+        });
+    }
+}

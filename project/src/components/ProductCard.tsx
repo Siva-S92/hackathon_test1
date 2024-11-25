@@ -2,9 +2,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Card, message, Modal } from "antd";
 import { axiosInstance } from "../lib/axios";
 
-
 const ProductCard: React.FC = () => {
-  const [productname, setProductName] = useState("")
+  const [productname, setProductName] = useState("");
   const [productdefinition, setProductdefinition] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isupdate, setIsUpdate] = useState(false);
@@ -13,7 +12,7 @@ const ProductCard: React.FC = () => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [defaultformData, setDefaultFormData] = useState({
     productID: "61630893-6873-456c-bc38-b9d7eb7bcedb",
-    productName: "Agricultural Fertilizer Dispensing System ",
+    productName: "Agricultural Fertilizer Dispensing System",
     components: {
       soil_moisture_sensor: {
         name: "Soil Moisture Sensor",
@@ -28,17 +27,17 @@ const ProductCard: React.FC = () => {
         range: { min: 3000, max: 9000 },
       },
       actuator: {
-        type: "Fertilizer Dispencing Motor",
-        state: "ON",
+        type: "Fertilizer Dispensing Motor",
+        state: ["ON", "OFF"], // Default value for the state
       },
     },
   });
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
     path: string[]
   ) => {
-    const { name, value } = e.target;
+    const { value } = e.target;
 
     setDefaultFormData((prevState) => {
       const updated = { ...prevState };
@@ -49,8 +48,13 @@ const ProductCard: React.FC = () => {
       }
 
       const finalKey = path[path.length - 1];
+      // Parse JSON if it's for state values
       current[finalKey] =
-        name === "min" || name === "max" ? parseFloat(value) || 0 : value;
+        e.target.tagName === "SELECT"
+          ? JSON.parse(value)
+          : isNaN(Number(value))
+          ? value
+          : Number(value);
 
       return updated;
     });
@@ -70,19 +74,19 @@ const ProductCard: React.FC = () => {
     setIsNewProduct(!isnewproduct);
   };
 
-  const addProduct = async() => {
-    let data = {name: productname}
+  const addProduct = async () => {
+    let data = { name: productname };
     setConfirmLoading(true); // Start loading
     try {
-      const response = await axiosInstance.post(`/api/add-product`, data)
-      message.success(`The Product ${response.data.name} created successfully`)
+      const response = await axiosInstance.post(`/api/add-product`, data);
+      message.success(`The Product ${response.data.name} created successfully`);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     } finally {
       setConfirmLoading(false); // Stop loading
-      setIsNewProduct(!isnewproduct)
+      setIsNewProduct(!isnewproduct);
     }
-  }
+  };
 
   const fetchProductDefinition = useCallback(async () => {
     try {
@@ -115,9 +119,8 @@ const ProductCard: React.FC = () => {
     }
   };
 
-
   const updateProductDefinition = async () => {
-    let updatedformData = {updates: defaultformData}
+    let updatedformData = { updates: defaultformData };
     setConfirmLoading(true); // Start loading
     try {
       const response = await axiosInstance.patch(
@@ -134,7 +137,7 @@ const ProductCard: React.FC = () => {
       message.error("Operation failed.");
     } finally {
       setConfirmLoading(false); // Stop loading
-      setIsUpdate(!isupdate)
+      setIsUpdate(!isupdate);
     }
   };
 
@@ -156,7 +159,9 @@ const ProductCard: React.FC = () => {
 
   const deleteProductDefinition = async () => {
     try {
-      const response = await axiosInstance.delete(`/api/delete-productdefinition`);
+      const response = await axiosInstance.delete(
+        `/api/delete-productdefinition`
+      );
       message.success(response.data.message, 5);
       console.log(response.data);
 
@@ -175,7 +180,7 @@ const ProductCard: React.FC = () => {
     <>
       <Card
         className="bg-gray-200 w-full max-w-2xl mx-auto "
-        title="Product Details"
+        title="Product Definition"
         extra={
           <span className="flex gap-1">
             <button
@@ -220,6 +225,7 @@ const ProductCard: React.FC = () => {
           {productdefinition?.components?.LDR_sensor?.range.max}
         </p>
         <p>Actuator1: {productdefinition?.components?.actuator?.type}</p>
+        <p>state: {JSON.stringify(productdefinition?.components?.actuator?.state)}</p>
       </Card>
 
       <div className="w-full max-w-2xl flex flex-col gap-3 mx-auto mt-2">
@@ -236,6 +242,9 @@ const ProductCard: React.FC = () => {
           Add new Product
         </button>
       </div>
+
+
+      
 
       <Modal
         width={800}
@@ -343,6 +352,33 @@ const ProductCard: React.FC = () => {
                           </div>
                         </div>
                       );
+                    } else if (subKey === "state") {
+                      return (
+                        <div key={subKey} className="w-full">
+                          <label
+                            className="block text-sm font-medium mb-1"
+                            htmlFor={`${key}-state`}
+                          >
+                            State:
+                          </label>
+                          <select
+                            id={`${key}-state`}
+                            name="state"
+                            value={JSON.stringify(value)} // Convert array to JSON string
+                            onChange={(e) =>
+                              handleChange(e, ["components", key, "state"])
+                            }
+                            className="w-full border rounded-md py-2 px-3"
+                          >
+                            <option value={JSON.stringify(["ON", "OFF"])}>
+                              ON
+                            </option>
+                            <option value={JSON.stringify(["OFF", "ON"])}>
+                              OFF
+                            </option>
+                          </select>
+                        </div>
+                      );
                     }
                     return (
                       <div key={subKey} className="w-full">
@@ -374,7 +410,13 @@ const ProductCard: React.FC = () => {
               )
             )}
           </fieldset>
-          <button type="button" onClick={newProductDefinition} className="bg-slate-400 py-1 rounded-md">submit</button>
+          <button
+            type="button"
+            onClick={newProductDefinition}
+            className="bg-slate-400 py-1 rounded-md"
+          >
+            submit
+          </button>
         </form>
       </Modal>
 
@@ -485,6 +527,33 @@ const ProductCard: React.FC = () => {
                             </div>
                           </div>
                         );
+                      } else if (subKey === "state") {
+                        return (
+                          <div key={subKey} className="w-full">
+                            <label
+                              className="block text-sm font-medium mb-1"
+                              htmlFor={`${key}-state`}
+                            >
+                              State:
+                            </label>
+                            <select
+                              id={`${key}-state`}
+                              name="state"
+                              value={JSON.stringify(value)} // Convert array to JSON string
+                              onChange={(e) =>
+                                handleChange(e, ["components", key, "state"])
+                              }
+                              className="w-full border rounded-md py-2 px-3"
+                            >
+                              <option value={JSON.stringify(["ON", "OFF"])}>
+                                ON
+                              </option>
+                              <option value={JSON.stringify(["OFF", "ON"])}>
+                                OFF
+                              </option>
+                            </select>
+                          </div>
+                        );
                       }
                       return (
                         <div key={subKey} className="w-full">
@@ -516,7 +585,13 @@ const ProductCard: React.FC = () => {
                 )
               )}
             </fieldset>
-            <button type="button" onClick={updateProductDefinition} className="bg-slate-400 py-1 rounded-md">submit</button>
+            <button
+              type="button"
+              onClick={updateProductDefinition}
+              className="bg-slate-400 py-1 rounded-md"
+            >
+              submit
+            </button>
           </form>
         </Modal>
       )}
@@ -543,7 +618,11 @@ const ProductCard: React.FC = () => {
               onChange={(e) => setProductName(e.target.value)}
             />
 
-            <button type="button" onClick={addProduct} className="block bg-blue-500 py-1 rounded-md mt-5">
+            <button
+              type="button"
+              onClick={addProduct}
+              className="block bg-blue-500 py-1 rounded-md mt-5"
+            >
               submit
             </button>
           </form>

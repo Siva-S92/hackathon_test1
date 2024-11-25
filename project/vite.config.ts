@@ -8,15 +8,15 @@ export default defineConfig({
     exclude: ['lucide-react'],
   },
   // TO USE OUR EXPRESS-BACKEND
-  server: {
-    proxy: {
-      '/api': {
-        target: 'https://hackathon-test1-backend.vercel.app',  // http://localhost:5000 URL of your Express backend
-        changeOrigin: true,             // Change the origin of the host header to match the target
-        secure: false,                  // Use only if the backend uses HTTPS
-      },
-    },
-  },
+  // server: {
+  //   proxy: {
+  //     '/api': {
+  //       target: 'https://hackathon-test1-backend.vercel.app',  // http://localhost:5000 URL of your Express backend
+  //       changeOrigin: true,             // Change the origin of the host header to match the target
+  //       secure: false,                  // Use only if the backend uses HTTPS
+  //     },
+  //   },
+  // },
 
 
   // YOU CAN MAKE LIVE THE CONFIGURATIONS GIVEN BELOW, IF YOU DON'T WANT TO USE OUR EXPRESS- BACKEND

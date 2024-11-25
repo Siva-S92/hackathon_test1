@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
-import { Settings, Bell, X, Droplet, Sun, Gauge, Power } from 'lucide-react';
-import StatusCard from './components/StatusCard';
-import DeviceCard from './components/DeviceCard';
-import ProductCard from './components/ProductCard';
-import { axiosInstance } from './lib/axios';
-
+import { useEffect, useState } from "react";
+import { Settings, Bell, X, Droplet, Sun, Gauge, Power } from "lucide-react";
+import StatusCard from "./components/StatusCard";
+import DeviceCard from "./components/DeviceCard";
+import ProductCard from "./components/ProductCard";
+import { axiosInstance } from "./lib/axios";
+import BasicLineChart from "./components/SensorDataCharts";
 
 function App() {
   const [moistureLevel, setMoistureLevel] = useState(75);
@@ -12,22 +12,22 @@ function App() {
   const [fertilizerLevel, setFertilizerLevel] = useState(70);
   const [isDeviceOn, setIsDeviceOn] = useState(false);
 
-  const checkDeviceRunningStatus = async() => {
-    let data = {productID: "61630893-6873-456c-bc38-b9d7eb7bcedb"}
+  const checkDeviceRunningStatus = async () => {
+    let data = { productID: "61630893-6873-456c-bc38-b9d7eb7bcedb" };
     try {
-      const response = await axiosInstance.post(`/api/check-running`, data)
-      console.log(response.data)
-      if(parseInt(response.data.runningDevicesCount) > 0){
-        setIsDeviceOn(true)
+      const response = await axiosInstance.post(`/api/check-running`, data);
+      console.log(response.data);
+      if (parseInt(response.data.runningDevicesCount) > 0) {
+        setIsDeviceOn(true);
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
-    checkDeviceRunningStatus()
-  }, [])
+    checkDeviceRunningStatus();
+  }, []);
 
   const adjustValue = (value: number, delta: number): number => {
     const newValue = value + delta;
@@ -38,10 +38,10 @@ function App() {
   const handleSunlightChange = (delta: number) => {
     const newSunlight = adjustValue(sunlightLevel, delta);
     setSunlightLevel(newSunlight);
-    
+
     // Inverse relationship: as sunlight increases, fertilizer decreases
     const fertilizerDelta = -delta * 0.5; // 50% inverse relationship
-    setFertilizerLevel(prev => adjustValue(prev, fertilizerDelta));
+    setFertilizerLevel((prev) => adjustValue(prev, fertilizerDelta));
   };
 
   return (
@@ -50,7 +50,9 @@ function App() {
       <header className="bg-violet-400 border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 py-2">
           <div className="flex items-center justify-between">
-            <h1 className="text-xl font-semibold text-gray-900">SMART FERTILIZER DISPENSER DASHBOARD</h1>
+            <h1 className="text-xl font-semibold text-gray-900">
+              SMART FERTILIZER DISPENSER DASHBOARD
+            </h1>
             <div className="flex items-center gap-4">
               <button className="p-2">
                 <Settings className="w-5 h-5" />
@@ -75,8 +77,8 @@ function App() {
             label="Moisture"
             icon={<Droplet className="w-5 h-5" />}
             canAdjust={true}
-            onIncrease={() => setMoistureLevel(prev => adjustValue(prev, 5))}
-            onDecrease={() => setMoistureLevel(prev => adjustValue(prev, -5))}
+            onIncrease={() => setMoistureLevel((prev) => adjustValue(prev, 5))}
+            onDecrease={() => setMoistureLevel((prev) => adjustValue(prev, -5))}
           />
           <StatusCard
             title="Sunlight Level Status"
@@ -93,8 +95,12 @@ function App() {
             label="Fertilizer"
             icon={<Gauge className="w-5 h-5" />}
             canAdjust={true}
-            onIncrease={() => setFertilizerLevel(prev => adjustValue(prev, 5))}
-            onDecrease={() => setFertilizerLevel(prev => adjustValue(prev, -5))}
+            onIncrease={() =>
+              setFertilizerLevel((prev) => adjustValue(prev, 5))
+            }
+            onDecrease={() =>
+              setFertilizerLevel((prev) => adjustValue(prev, -5))
+            }
           />
           <StatusCard
             title="Dispenser Status"
@@ -106,18 +112,18 @@ function App() {
         </div>
 
         <div className="mt-6">
-          <DeviceCard 
-            isOn={isDeviceOn} 
-            onToggle={() => setIsDeviceOn(!isDeviceOn)} 
+          <DeviceCard
+            isOn={isDeviceOn}
+            onToggle={() => setIsDeviceOn(!isDeviceOn)}
           />
         </div>
 
-          {/* productcard */}
+        {/* productcard */}
 
-        <div className='mt-6'>
-            <ProductCard />
+        <div className="mt-6">
+          <BasicLineChart />
+          <ProductCard />
         </div>
-
       </main>
     </div>
   );

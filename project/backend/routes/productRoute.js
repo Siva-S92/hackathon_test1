@@ -1,5 +1,5 @@
 import express from 'express';
-import { addNewProductDefinition, addProduct, checkDeviceRunning, deleteProductDefinition, getProductDefinition, startDevice, stopDevice, updateProductDefinition } from '../controllers/product.js';
+import { addNewProductDefinition, addProduct, checkDeviceRunning, deleteProductDefinition, generataData, getAllData, getProductDefinition, startDevice, stopDevice, updateProductDefinition } from '../controllers/product.js';
 
 
 
@@ -14,6 +14,8 @@ router.route("/update-productdefinition").patch(updateProductDefinition);
 router.route("/delete-productdefinition").delete(deleteProductDefinition);
 router.route("/start-device").post(startDevice);
 router.route("/stop-device").post(stopDevice);
+router.route("/generate-data").post(generataData);
+router.route("/get-alldata").post(getAllData);
 
 
 
